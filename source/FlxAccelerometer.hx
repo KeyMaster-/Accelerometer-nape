@@ -1,13 +1,12 @@
 package;
 import flash.events.AccelerometerEvent;
 import flash.sensors.Accelerometer;
-import flixel.util.FlxPoint;
 
 class FlxAccelerometer {
 	public var x(default, null):Float = 0;
 	public var y(default, null):Float = 0;
 	public var z(default, null):Float = 0;
-	public var isSupported(get, null):Bool;
+	public var isSupported(get, never):Bool;
 	var sensor:Accelerometer;
 	public function new() {
 		if (Accelerometer.isSupported) {

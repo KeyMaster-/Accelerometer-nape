@@ -1,28 +1,20 @@
 package;
 
-import flixel.addons.nape.FlxNapeSprite;
 import flixel.addons.nape.FlxNapeState;
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.text.FlxText;
-import flixel.ui.FlxButton;
-import flixel.util.FlxAngle;
-import flixel.util.FlxMath;
-import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import nape.geom.Vec2;
-import nape.phys.Body;
-import nape.phys.BodyType;
-import nape.phys.Material;
-import nape.shape.Polygon;
 
 /**
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxNapeState
 {
-	var accel:FlxAccelerometer;
+	private var accel:FlxAccelerometer;
+	private var xText:FlxText;
+	private var yText:FlxText;
+	private var zText:FlxText;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -31,12 +23,8 @@ class PlayState extends FlxNapeState
 		super.create();
 		
 		accel = new FlxAccelerometer();
-		var walls:Body = new Body(BodyType.STATIC, Vec2.get());
-		walls.shapes.add(new Polygon(Polygon.rect( -16, 0, 16, FlxG.height), new Material(0, 100,100)));
-		walls.shapes.add(new Polygon(Polygon.rect(FlxG.width, 0, 16, FlxG.height), new Material(0, 100,100)));
-		walls.shapes.add(new Polygon(Polygon.rect(0, -16, FlxG.width, 16), new Material(0, 100,100)));
-		walls.shapes.add(new Polygon(Polygon.rect(0, FlxG.height, FlxG.width, 16), new Material(0, 100,100)));
-		FlxNapeState.space.bodies.add(walls);
+		
+		createWalls();
 		FlxNapeState.space.gravity = Vec2.get(0, 500);
 		
 		for (i in 0...20) {
@@ -44,6 +32,17 @@ class PlayState extends FlxNapeState
 			box.body.space = FlxNapeState.space;
 			add(box);
 		}
+		
+		xText = new FlxText(0, 20, FlxG.width, "x", 30);
+		xText.alignment = "center";
+		yText = new FlxText(0, xText.frameHeight + 30, FlxG.width, "y", 30);
+		yText.alignment = "center";
+		zText = new FlxText(0, xText.frameHeight + yText.frameHeight + 40, FlxG.width, "z", 30);
+		zText.alignment = "center";
+		
+		add(xText);
+		add(yText);
+		add(zText);
 		
 	}
 	
@@ -64,10 +63,14 @@ class PlayState extends FlxNapeState
 		super.update();
 		//var angle:Float = FlxAngle.TO_RAD * (FlxAngle.getAngle(FlxPoint.get(FlxG.width / 2, FlxG.height / 2), FlxG.mouse.getScreenPosition()) - 90);
 		//FlxNapeState.space.gravity.setxy(Math.cos(angle) * 500, Math.sin(angle) * 500);
+		if (accel.isSupported) 
+		{
+			xText.text = "x: " + Std.string(Math.round(accel.x * 10) / 10);
+			yText.text = "y: " + Std.string(Math.round(accel.y * 10) / 10);
+			zText.text = "z: " + Std.string(Math.round(accel.z * 10) / 10);
+			
+			FlxNapeState.space.gravity.setxy(-accel.x * 500, accel.y * 500);
+		}
 		
-		FlxNapeState.space.gravity.setxy(-accel.x * 500, accel.y * 500);
-		trace(accel.x);
-		trace(accel.y);
-		trace(accel.z);
 	}	
 }
