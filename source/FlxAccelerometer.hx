@@ -21,7 +21,7 @@ class FlxAccelerometer {
 	}
 	
 	
-	function updateCallback(event:Dynamic):Void {
+	function updateCallback(event:AccelerometerEvent):Void {
 		x = event.accelerationX;
 		y = event.accelerationY;
 		z = event.accelerationZ;
